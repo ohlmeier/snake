@@ -2,7 +2,7 @@ const BG_COLOUR = '#231f20';
 const SNAKE_COLOUR = '#c2c2c2';
 const FOOD_COLOUR = '#e66916';
 
-const socket = new WebSocket("ws://127.0.0.1:5000/ws")
+const socket = new WebSocket("ws://localhost:8080/ws")
 
 
 const generateRandomString = (length) => {

@@ -12,7 +12,7 @@ const (
 )
 
 type Game struct {
-	Players  map[string]Player
+	Players  []Player
 	Food     Position
 	GridSize int
 	Quit     chan bool `json:"-"`
@@ -31,7 +31,6 @@ type Player struct {
 
 func New() *Game {
 	game := &Game{
-		Players:  make(map[string]Player),
 		GridSize: gridSize,
 		Quit:     make(chan bool),
 	}
@@ -39,8 +38,8 @@ func New() *Game {
 	return game
 }
 
-func (g *Game) AddPlayerOne(ID string) {
-	g.Players[ID] = Player{
+func (g *Game) AddPlayerOne() {
+	g.Players = append(g.Players, Player{
 		Position: Position{3, 10},
 		Velocity: Position{1, 0},
 		Snake: []Position{
@@ -48,11 +47,11 @@ func (g *Game) AddPlayerOne(ID string) {
 			{2, 10},
 			{3, 10},
 		},
-	}
+	})
 }
 
-func (g *Game) AddPlayerTwo(ID string) {
-	g.Players[ID] = Player{
+func (g *Game) AddPlayerTwo() {
+	g.Players = append(g.Players, Player{
 		Position: Position{18, 10},
 		Velocity: Position{0, 0},
 		Snake: []Position{
@@ -60,11 +59,14 @@ func (g *Game) AddPlayerTwo(ID string) {
 			{19, 10},
 			{18, 10},
 		},
-	}
+	})
+}
+
+func (g *Game) IsFull() bool {
+	return len(g.Players) == 2
 }
 
 func (g *Game) Loop() string {
-
 	for key, player := range g.Players {
 		log.Printf("Player %s has vel %v", key, player.Velocity)
 		log.Printf("Player %s has pos %v", key, player.Position)
@@ -105,7 +107,7 @@ func (g *Game) Loop() string {
 		}
 	}
 
-	//log.Printf("%v\n", g)
+	// log.Printf("%v\n", g)
 
 	return ""
 }
@@ -128,23 +130,23 @@ func (g *Game) randomFood() {
 	g.Food = food
 }
 
-func GetUpdateVelocity(keyCode int) (Position, error) {
+func getUpdateVelocity(keyCode int) (Position, error) {
 	switch keyCode {
-	case 37: //left
+	case 37: // left
 		return Position{-1, 0}, nil
 	case 38: // up
 		return Position{0, 1}, nil
-	case 39: //right
+	case 39: // right
 		return Position{1, 0}, nil
-	case 40: //down
+	case 40: // down
 		return Position{0, -1}, nil
-	case 65: //left
+	case 65: // left
 		return Position{-1, 0}, nil
 	case 87: // up
 		return Position{0, 1}, nil
-	case 68: //right
+	case 68: // right
 		return Position{1, 0}, nil
-	case 83: //down
+	case 83: // down
 		return Position{0, -1}, nil
 	}
 
